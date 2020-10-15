@@ -1,3 +1,7 @@
+#define RED 0x001F
+#define GREEN 0x03E0
+#define BLUE 0x7C00
+
 int main(void)
 {
     // Write into the I/O registers, setting video display parameters.
@@ -7,9 +11,9 @@ int main(void)
 
     // Write pixel colours into VRAM
     volatile unsigned short *vram = (unsigned short *)0x06000000;
-    vram[80*240 + 115] = 0x001F; // X = 115, Y = 80, C = 000000000011111 = R
-    vram[80*240 + 120] = 0x03E0; // X = 120, Y = 80, C = 000001111100000 = G
-    vram[80*240 + 125] = 0x7C00; // X = 125, Y = 80, C = 111110000000000 = B
+    vram[40*240 + 115] = RED; // X = 115, Y = 80, C = 000000000011111 = R
+    vram[80*240 + 120] = GREEN; // X = 120, Y = 80, C = 000001111100000 = G
+    vram[80*240 + 125] = BLUE; // X = 125, Y = 80, C = 111110000000000 = B
 
     // Wait forever
     while(1);

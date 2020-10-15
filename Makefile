@@ -9,7 +9,7 @@ all: main.gba
 clean:
 	rm -f *.o main.elf main.gba
 
-exec:
+exec: main.gba
 	higan main.gba &
 
 main.gba: main.elf
