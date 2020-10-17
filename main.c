@@ -31,7 +31,7 @@ int main(void)
     tile_mem[4][2] = white_sprite;
 
     // set the palette
-    tile_palette_mem->data[0] = rbg(0, 31, 0); // transparency color is black
+    tile_palette_mem->data[0] = rbg(0, 0, 31); // transparency color is black
     tile_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
     tile_palette_mem->data[2] = rbg(31, 0, 0); // third color is red
 
@@ -45,18 +45,10 @@ int main(void)
 
     ((volatile obj_attributes*)0x07000000)[0] = obj;
 
-    uint32 x = sizeof(tile4);
-
-    bool hide_sprite = false;
     // Wait forever
     while(1)
     {
 	vsync_wait();
-
-	if(!keypressed && is_key_pressed(KEY_A))
-	    hide_sprite = !hide_sprite;
-
-	((volatile obj_attributes*)0x07000000)[0].attr0 = 50 | (hide_sprite << 9);
     }
 
     return 0;

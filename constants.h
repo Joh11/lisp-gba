@@ -1,5 +1,7 @@
 #pragma once
 
+#define ALIGN(n) __attribute__((aligned(n)))
+
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
@@ -42,4 +44,4 @@ typedef struct {
     uint16 attr1;
     uint16 attr2;
     sint16 fill;
-} __attribute__((aligned(4))) obj_attributes;
+} ALIGN(8) obj_attributes;
