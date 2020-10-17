@@ -14,9 +14,25 @@ the keyboard and A to type the selected character, B to erase it.
 For simplicity let's start with a 3 rows QWERTY layout:
 #+begin_example
   1234567890'
-  qwertyuiop:
+  qwertyuiop.
   asdfghjkl;,
-  zxcvbnm()+=
+  zxcvbnm(-+=
 #+end_example
 
-Terrible but each row is the same length at least.
+Terrible but each row is the same length at least (4 x 11). I did not include
+the right parenthesis because a Lisp editor should *never* have
+unmatched parentheses.
+
+Missing characters I should add later (probably using the select modifier)
+- "*/:)
+- uppercase letters
+
+*** Tiled background or sprites ?
+I was thinking of using a tiled background for the layout itself, and
+a sprite for the selected key.
+
+For now I should focus on getting the tiled background up and running,
+first with only two tiles: a black and a white one.
+
+Actually start with the sprite because it is first on the Tonc
+tutorial.
