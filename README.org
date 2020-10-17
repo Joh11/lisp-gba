@@ -1,0 +1,22 @@
+#+title: Turning the GBA into a Lisp machine
+
+* Current plan
+** Make a visual keyboard
+*** Layout ?
+I would like to draw inspiration from real Lisp machine keyboards,
+like the space cadet:
+[[https://upload.wikimedia.org/wikipedia/commons/4/47/Space-cadet.jpg]]
+
+I wanted to ues L and R for navigation through the parentheses. This
+leaves only select for the modifiers, as I would like start to hide
+the keyboard and A to type the selected character, B to erase it.
+
+For simplicity let's start with a 3 rows QWERTY layout:
+#+begin_example
+  1234567890'
+  qwertyuiop:
+  asdfghjkl;,
+  zxcvbnm()+=
+#+end_example
+
+Terrible but each row is the same length at least.
