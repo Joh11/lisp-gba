@@ -1,5 +1,7 @@
 CC = arm-none-eabi-gcc
-CFLAGS = -mthumb-interwork -mthumb -O2
+CFLAGS = -mthumb-interwork -mthumb
+# CFLAGS += -O2 # optimization
+CFLAGS += -g # debug
 LDFLAGS = -mthumb-interwork -mthumb -specs=gba.specs
 
 OBJECTS = main.o
@@ -10,7 +12,7 @@ clean:
 	rm -f *.o main.elf main.gba
 
 exec: main.gba
-	higan main.gba &
+	vgba32 main.gba &
 
 main.gba: main.elf
 	arm-none-eabi-objcopy -v -O binary $< $@
