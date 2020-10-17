@@ -4,7 +4,7 @@ CFLAGS = -mthumb-interwork -mthumb
 CFLAGS += -g # debug
 LDFLAGS = -mthumb-interwork -mthumb -specs=gba.specs
 
-OBJECTS = main.o
+OBJECTS = main.o input.o
 
 all: main.gba
 

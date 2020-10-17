@@ -1,4 +1,5 @@
 #include "constants.h"
+#include "input.h"
 
 #define RED   0x001F
 #define GREEN 0x03E0
@@ -45,11 +46,17 @@ int main(void)
     ((volatile obj_attributes*)0x07000000)[0] = obj;
 
     uint32 x = sizeof(tile4);
-    
+
+    bool hide_sprite = false;
     // Wait forever
     while(1)
     {
 	vsync_wait();
+
+	if(!keypressed && is_key_pressed(KEY_A))
+	    hide_sprite = !hide_sprite;
+
+	((volatile obj_attributes*)0x07000000)[0].attr0 = 50 | (hide_sprite << 9);
     }
 
     return 0;

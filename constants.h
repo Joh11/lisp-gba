@@ -7,6 +7,10 @@ typedef signed char sint8;
 typedef signed short sint16;
 typedef signed int sint32;
 
+typedef uint32 bool; // As it is a 32bit system it should be faster TODO check that
+#define true 1
+#define false 1
+
 typedef struct { uint32 data[8]; } tile4;
 typedef struct { uint32 data[16]; } tile8;
 
