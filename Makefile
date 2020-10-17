@@ -12,7 +12,7 @@ clean:
 	rm -f *.o main.elf main.gba
 
 exec: main.gba
-	vgba32 main.gba &
+	mgba-qt main.gba &
 
 main.gba: main.elf
 	arm-none-eabi-objcopy -v -O binary $< $@
