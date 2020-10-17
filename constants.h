@@ -19,4 +19,4 @@ typedef struct { uint16 data[256]; } palette;
 #define tile_palette_mem ((palette*) 0x05000200)
 
 // Vsync
-#define REG_VCOUNT *(uint16*)0x04000006
+#define REG_VCOUNT *(volatile uint16*)0x04000006

@@ -36,3 +36,6 @@ first with only two tiles: a black and a white one.
 
 Actually start with the sprite because it is first on the Tonc
 tutorial.
+
+* Things to add later
+- Proper vsync like pointed in the end of [[https://www.coranac.com/tonc/text/video.htm][this tutorial]]
