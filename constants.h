@@ -33,7 +33,7 @@ typedef struct { uint16 data[256]; } palette;
 #define REG_VCOUNT *(volatile uint16*)0x04000006
 
 // General settings for display
-#define REG_DISPCNT (volatile uint16*)0x04000000
+#define REG_DISPCNT *(volatile uint16*)0x04000000
 
 // Flags
 #define flag_video_mode0 0

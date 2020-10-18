@@ -11,7 +11,7 @@ I wanted to ues L and R for navigation through the parentheses. This
 leaves only select for the modifiers, as I would like start to hide
 the keyboard and A to type the selected character, B to erase it.
 
-For simplicity let's start with a 3 rows QWERTY layout:
+For simplicity let's start with a 4 rows QWERTY layout:
 #+begin_example
   1234567890'
   qwertyuiop.
@@ -31,7 +31,10 @@ Missing characters I should add later (probably using the select modifier)
 I was thinking of using a tiled background for the layout itself, and
 a sprite for the selected key.
 
-For now I should put a gray background for the back of the keyboard.
+*** Graphics of the keyboard
+Each key should be 2x2 tiles (16x16 pixels). The x axis of the screen
+can fit 30 tiles, so 15 keys. I only need 11, so I have 4 left, 2 on
+each side.
 
 * Things to add later
 - Proper vsync like pointed in the end of [[https://www.coranac.com/tonc/text/video.htm][this tutorial]]

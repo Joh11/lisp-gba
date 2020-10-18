@@ -66,7 +66,7 @@ int main(void)
     const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
     const uint32 selector[2] = {0x810081db, 0xdb810081};
 
-    *REG_DISPCNT = flag_video_mode0 | flag_enable_bg0 | flag_enable_sprites;
+    REG_DISPCNT = flag_video_mode0 | flag_enable_bg0 | flag_enable_sprites;
 
     // sprite 0 of reg 5 will be totally white (the 2nd color of the palette)
     tile4 white_sprite = {
@@ -167,68 +167,24 @@ int main(void)
     bg_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
     bg_palette_mem->data[2] = rbg(15, 15, 15); // second color is gray
     
-    /* keyboard tilemap (32x32)
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ................................
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ################################
-       ................................
-       ................................
-     */
-    
     // Wait forever
     while(1)
     {
 	vsync_wait();
 
-	if(is_key_pressed(KEY_UP))
+	if(key_pressed_delay(ENUM_UP))
 	    obj_selector.attr0 -= 8;
-	if(is_key_pressed(KEY_DOWN))
+	if(key_pressed_delay(ENUM_DOWN))
 	    obj_selector.attr0 += 8;
-	if(is_key_pressed(KEY_LEFT))
-	{
-	    if(num_cycles_last_down >= delay)
-	    {
-		num_cycles_last_down = 0;
-		obj_selector.attr1 -= 8;
-	    }
-	    else
-		num_cycles_last_down++;
-	}
-	else if(num_cycles_last_down != 0)
-	{
-	    num_cycles_last_down = delay;
-	}
-	
-	if(is_key_pressed(KEY_RIGHT))
+	if(key_pressed_delay(ENUM_LEFT))
+	    obj_selector.attr1 -= 8;
+	if(key_pressed_delay(ENUM_RIGHT))
 	    obj_selector.attr1 += 8;
+	
 	oam[2] = obj_selector;
+	
+	update_key_state();
+
     }
 
     return 0;

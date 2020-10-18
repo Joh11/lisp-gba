@@ -16,4 +16,30 @@
 #define KEY_L      (0b1 << 9)
 #define KEY_ANY    0x03ff
 
-bool is_key_pressed(uint32 key);
+// Same but the enum is not bitshifted
+typedef enum
+{
+    ENUM_A      = 0,
+    ENUM_B      = 1,
+    ENUM_SELECT = 2,
+    ENUM_START  = 3,
+    ENUM_RIGHT  = 4,
+    ENUM_LEFT   = 5,
+    ENUM_UP     = 6,
+    ENUM_DOWN   = 7,
+    ENUM_R      = 8,
+    ENUM_L      = 9
+} enum_key;
+
+bool is_key_pressed(enum_key key);
+
+// Same as is_key_pressed, but if a button is pressed, wait `delay`
+// frames before returning true again.
+bool key_pressed_delay(enum_key key);
+
+// Set the delay between two consecutive keypresses if the key stays
+// pressed
+void set_key_delay(uint32 delay);
+
+// Call this every frame to make sure the delay feature works
+void update_key_state();
