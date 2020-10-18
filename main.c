@@ -130,6 +130,9 @@ int main(void)
     ((volatile obj_attributes*)0x07000000)[1] = obj_lambda;
     ((volatile obj_attributes*)0x07000000)[2] = obj_selector;
 
+    const uint32 delay = 20;
+    uint32 num_cycles_last_down = 0;
+    
     // Wait forever
     while(1)
     {
@@ -140,7 +143,20 @@ int main(void)
 	if(is_key_pressed(KEY_DOWN))
 	    obj_selector.attr0 += 8;
 	if(is_key_pressed(KEY_LEFT))
-	    obj_selector.attr1 -= 8;
+	{
+	    if(num_cycles_last_down >= delay)
+	    {
+		num_cycles_last_down = 0;
+		obj_selector.attr1 -= 8;
+	    }
+	    else
+		num_cycles_last_down++;
+	}
+	else if(num_cycles_last_down != 0)
+	{
+	    num_cycles_last_down = delay;
+	}
+	
 	if(is_key_pressed(KEY_RIGHT))
 	    obj_selector.attr1 += 8;
 	((volatile obj_attributes*)0x07000000)[2] = obj_selector;

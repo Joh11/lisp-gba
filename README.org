@@ -31,11 +31,7 @@ Missing characters I should add later (probably using the select modifier)
 I was thinking of using a tiled background for the layout itself, and
 a sprite for the selected key.
 
-For now I should focus on getting the tiled background up and running,
-first with only two tiles: a black and a white one.
-
-Actually start with the sprite because it is first on the Tonc
-tutorial.
+For now I should put a gray background for the back of the keyboard.
 
 * Things to add later
 - Proper vsync like pointed in the end of [[https://www.coranac.com/tonc/text/video.htm][this tutorial]]
