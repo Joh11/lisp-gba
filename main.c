@@ -61,6 +61,34 @@ tile4 unpack_monochrome_tile4(const uint32 data[2], uint8 fg_index, uint8 gb_ind
     return ret;
 }
 
+void fill_keyboard_tilemap(volatile screenblock sb)
+{
+    for(size_t row = 0 ; row < 12 ; ++row)
+    {
+	for(size_t col = 0 ; col < 32 ; ++col)
+	    sb[32 * row + col] = 0;
+    }
+    for(size_t row = 12 ; row < 20 ; ++row)
+    {
+	for(size_t col = 0 ; col < 32 ; ++col)
+	{
+	    if ((col < 4) || (col > 25))
+	    {
+		sb[32 * row + col] = 0;
+		continue;
+	    }
+	    sb[32 * row + col] = (row % 2) ?
+		3 + 2 * (col % 2)
+		: 2 + 2 * (col % 2);
+	}
+    }
+    for(size_t row = 20 ; row < 32 ; ++row)
+    {
+	for(size_t col = 0 ; col < 32 ; ++col)
+	    sb[32 * row + col] = 0;
+    }
+}
+
 int main(void)
 {
     const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
@@ -87,7 +115,7 @@ int main(void)
 
     // set the lambda attributes
     obj_attributes obj_lambda = {
-	160/2 + 4,  // y coord + other stuff
+	160/2 + 16 + 4,  // y coord + other stuff
 	240/2 - 4,  // x coord + other stuff
 	3 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
@@ -126,32 +154,12 @@ int main(void)
     REG_BG0HOFS = 0;
     REG_BG0VOFS = 0;
 
-    // Fill the tilemap
     // Use screenblock 0
-    for(size_t row = 0 ; row < 10 ; ++row)
-    {
-	for(size_t col = 0 ; col < 32 ; ++col)
-	    se_mem[0][32 * row + col] = 0;
-    }
-    for(size_t row = 10 ; row < 20 ; ++row)
-    {
-	for(size_t col = 0 ; col < 32 ; ++col)
-	    se_mem[0][32 * row + col] = (row % 2) ?
-		3 + 2 * (col % 2)
-		: 2 + 2 * (col % 2);
-    }
-    for(size_t row = 20 ; row < 32 ; ++row)
-    {
-	for(size_t col = 0 ; col < 32 ; ++col)
-	    se_mem[0][32 * row + col] = 0;
-    }
+    fill_keyboard_tilemap(se_mem[0]);
 
     // Fill the tiles
     // Use the charblock 1
-    tile4 black_tile = {
-	{0x00000000, 0x00000000, 0x00000000, 0x00000000,
-	 0x00000000, 0x00000000, 0x00000000, 0x00000000},
-    };
+    const bitpacked_tile4 black_tile = {0x00000000, 0x00000000};;
     tile4 white_tile = {
 	{0x11111111, 0x11111111, 0x11111111, 0x11111111,
 	 0x11111111, 0x11111111, 0x11111111, 0x11111111},
@@ -162,12 +170,12 @@ int main(void)
     };
 
     // tiles for the keycaps
-    const uint32 key_tl[2] = {0x202fe00, 0x2020202};
-    const uint32 key_tr[2] = {0x2020202, 0xfe0202};
-    const uint32 key_bl[2] = {0x40407f00, 0x40404040};
-    const uint32 key_br[2] = {0x40404040, 0x7f4040};
+    const bitpacked_tile4 key_tl = {0x202fe00, 0x2020202};
+    const bitpacked_tile4 key_tr = {0x2020202, 0xfe0202};
+    const bitpacked_tile4 key_bl = {0x40407f00, 0x40404040};
+    const bitpacked_tile4 key_br = {0x40404040, 0x7f4040};
     
-    tile_mem[1][0] = black_tile;
+    tile_mem[1][0] = unpack_monochrome_tile4(black_tile, 1, 0);
     tile_mem[1][1] = gray_tile;
     tile_mem[1][2] = unpack_monochrome_tile4(key_tl, 2, 0);
     tile_mem[1][3] = unpack_monochrome_tile4(key_tr, 2, 0);
@@ -185,13 +193,13 @@ int main(void)
 	vsync_wait();
 
 	if(key_pressed_delay(ENUM_UP))
-	    obj_selector.attr0 -= 8;
+	    obj_selector.attr0 -= 16;
 	if(key_pressed_delay(ENUM_DOWN))
-	    obj_selector.attr0 += 8;
+	    obj_selector.attr0 += 16;
 	if(key_pressed_delay(ENUM_LEFT))
-	    obj_selector.attr1 -= 8;
+	    obj_selector.attr1 -= 16;
 	if(key_pressed_delay(ENUM_RIGHT))
-	    obj_selector.attr1 += 8;
+	    obj_selector.attr1 += 16;
 	
 	oam[2] = obj_selector;
 	

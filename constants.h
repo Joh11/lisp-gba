@@ -74,3 +74,5 @@ typedef screen_entry screenblock[1024];
 
 // Screen entry mapping: se_mem[x][y] is screen base block x, entry y
 #define se_mem ((volatile screenblock*)0x06000000)
+
+typedef uint32 bitpacked_tile4[2];
