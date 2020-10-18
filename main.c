@@ -126,9 +126,9 @@ int main(void)
     };
 
     
-    ((volatile obj_attributes*)0x07000000)[0] = obj;
-    ((volatile obj_attributes*)0x07000000)[1] = obj_lambda;
-    ((volatile obj_attributes*)0x07000000)[2] = obj_selector;
+    oam[0] = obj;
+    oam[1] = obj_lambda;
+    oam[2] = obj_selector;
 
     const uint32 delay = 20;
     uint32 num_cycles_last_down = 0;
@@ -159,7 +159,7 @@ int main(void)
 	
 	if(is_key_pressed(KEY_RIGHT))
 	    obj_selector.attr1 += 8;
-	((volatile obj_attributes*)0x07000000)[2] = obj_selector;
+	oam[2] = obj_selector;
     }
 
     return 0;

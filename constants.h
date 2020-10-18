@@ -27,6 +27,8 @@ typedef struct { uint16 data[256]; } palette;
 #define bg_palette_mem   ((volatile palette*) 0x05000000)
 #define tile_palette_mem ((volatile palette*) 0x05000200)
 
+#define oam ((volatile obj_attributes*)0x07000000) // object attribute memory
+
 // Vsync
 #define REG_VCOUNT *(volatile uint16*)0x04000006
 
