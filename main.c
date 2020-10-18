@@ -66,7 +66,7 @@ int main(void)
     const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
     const uint32 selector[2] = {0x810081db, 0xdb810081};
 
-    *REG_DISPCNT = flag_video_mode0 | flag_enable_sprites;
+    *REG_DISPCNT = flag_video_mode0 | flag_enable_bg0 | flag_enable_sprites;
 
     // sprite 0 of reg 5 will be totally white (the 2nd color of the palette)
     tile4 white_sprite = {
@@ -107,6 +107,100 @@ int main(void)
 
     const uint32 delay = 10;
     uint32 num_cycles_last_down = 0;
+
+
+    // -----------------------------------------------------------------------------
+    // Background
+    // -----------------------------------------------------------------------------
+
+    // Using BG0 for the keyboard
+    REG_BG0CNT = 3 // low priority
+	| (1 << 2) // charblock
+	| (0 << 6) // mosaic
+	| (0 << 7) // 4bpp
+	| (0 << 8) // screenblock
+	| (0 << 0xd) // affine wrapping (dont care)
+	| (0b00 << 0xe) // 32x32 tiles (we need at least 20 tiles wide)
+	;
+
+    REG_BG0HOFS = 0;
+    REG_BG0VOFS = 0;
+
+    // Fill the tilemap
+    // Use screenblock 0
+    for(size_t row = 0 ; row < 10 ; ++row)
+    {
+	for(size_t col = 0 ; col < 32 ; ++col)
+	    se_mem[0][32 * row + col] = 0;
+    }
+    for(size_t row = 10 ; row < 20 ; ++row)
+    {
+	for(size_t col = 0 ; col < 32 ; ++col)
+	    se_mem[0][32 * row + col] = 1;
+    }
+    for(size_t row = 20 ; row < 32 ; ++row)
+    {
+	for(size_t col = 0 ; col < 32 ; ++col)
+	    se_mem[0][32 * row + col] = 0;
+    }
+
+    // Fill the tiles
+    // Use the charblock 1
+    tile4 black_tile = {
+	{0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+    };
+    tile4 white_tile = {
+	{0x11111111, 0x11111111, 0x11111111, 0x11111111,
+	 0x11111111, 0x11111111, 0x11111111, 0x11111111},
+    };
+    tile4 gray_tile = {
+	{0x11111111, 0x12222221, 0x12222221, 0x12222221,
+	 0x12222221, 0x12222221, 0x12222221, 0x11111111},
+    };
+    
+    tile_mem[1][0] = black_tile;
+    tile_mem[1][1] = gray_tile;
+
+    // Set the palette
+    bg_palette_mem->data[0] = rbg(0, 0, 0); // transparency color is black
+    bg_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
+    bg_palette_mem->data[2] = rbg(15, 15, 15); // second color is gray
+    
+    /* keyboard tilemap (32x32)
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ................................
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ################################
+       ................................
+       ................................
+     */
     
     // Wait forever
     while(1)

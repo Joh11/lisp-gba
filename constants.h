@@ -37,6 +37,10 @@ typedef struct { uint16 data[256]; } palette;
 
 // Flags
 #define flag_video_mode0 0
+#define flag_enable_bg0 (1 << 8)
+#define flag_enable_bg1 (1 << 9)
+#define flag_enable_bg2 (1 << 0xa)
+#define flag_enable_bg3 (1 << 0xb)
 #define flag_enable_sprites (1 << 12)
 
 
@@ -47,3 +51,26 @@ typedef struct {
     uint16 attr2;
     sint16 fill;
 } ALIGN(8) obj_attributes;
+
+
+// Background stuff
+
+#define REG_BG0CNT *(volatile uint16*)0x04000008
+#define REG_BG1CNT *(volatile uint16*)0x0400000a
+#define REG_BG2CNT *(volatile uint16*)0x0400000c
+#define REG_BG3CNT *(volatile uint16*)0x0400000e
+
+#define REG_BG0HOFS *(volatile uint16*)0x04000010
+#define REG_BG0VOFS *(volatile uint16*)0x04000012
+#define REG_BG1HOFS *(volatile uint16*)0x04000014
+#define REG_BG1VOFS *(volatile uint16*)0x04000016
+#define REG_BG2HOFS *(volatile uint16*)0x04000018
+#define REG_BG2VOFS *(volatile uint16*)0x0400001a
+#define REG_BG3HOFS *(volatile uint16*)0x0400001c
+#define REG_BG3VOFS *(volatile uint16*)0x0400001e
+
+typedef uint16 screen_entry;
+typedef screen_entry screenblock[1024];
+
+// Screen entry mapping: se_mem[x][y] is screen base block x, entry y
+#define se_mem ((volatile screenblock*)0x06000000)
