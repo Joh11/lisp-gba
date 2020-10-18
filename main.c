@@ -31,6 +31,7 @@ int main(void)
     tile_mem[4][2] = white_sprite;
 
     // set the palette
+    
     tile_palette_mem->data[0] = rbg(0, 0, 31); // transparency color is black
     tile_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
     tile_palette_mem->data[2] = rbg(31, 0, 0); // third color is red
