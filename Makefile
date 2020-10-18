@@ -1,7 +1,7 @@
 CC = arm-none-eabi-gcc
 CFLAGS = -mthumb-interwork -mthumb
-CFLAGS += -O3 # optimization
-# CFLAGS += -g # debug
+# CFLAGS += -O3 # optimization
+CFLAGS += -g # debug
 LDFLAGS = -mthumb-interwork -mthumb -specs=gba.specs
 
 OBJECTS = main.o input.o
