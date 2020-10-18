@@ -87,16 +87,16 @@ int main(void)
 
     // set the lambda attributes
     obj_attributes obj_lambda = {
-	100,  // y coord + other stuff
-	100,  // x coord + other stuff
+	160/2,  // y coord + other stuff
+	240/2,  // x coord + other stuff
 	3 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
     };
 
     // set the selector attributes
     obj_attributes obj_selector = {
-	100,  // y coord + other stuff
-	50,  // x coord + other stuff
+	160 / 2,  // y coord + other stuff
+	0,  // x coord + other stuff
 	4 | (0b10 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
     };
