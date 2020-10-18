@@ -80,6 +80,7 @@ int main(void)
      */
     //
     const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
+    const uint32 selector[2] = {0x810081db, 0xdb810081};
 
     *REG_DISPCNT = flag_video_mode0 | flag_enable_sprites;
 
@@ -91,9 +92,9 @@ int main(void)
     tile_mem[4][1] = white_sprite;
     tile_mem[4][2] = white_sprite;
 
-    const tile4 lambda_sprite = {
-	{0x00000100, 0x00001000, 0x00001000, 0x00010000, 0x00101000, 0x00101000, 0x01000100},};
     tile_mem[4][3] = unpack_monochrome_tile4(letter_lambda, 0x1, 0x0);
+    tile_mem[4][4] = unpack_monochrome_tile4(selector, 0x2, 0x0);
+    
     
     // set the palette
     tile_palette_mem->data[0] = rbg(0, 0, 31); // transparency color is black
@@ -115,14 +116,34 @@ int main(void)
 	3 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
     };
+
+    // set the selector attributes
+    obj_attributes obj_selector = {
+	100,  // y coord + other stuff
+	50,  // x coord + other stuff
+	4 | (0b10 << 0xA) | (0b00 << 0xC), // tile index + others stuff
+	0
+    };
+
     
     ((volatile obj_attributes*)0x07000000)[0] = obj;
     ((volatile obj_attributes*)0x07000000)[1] = obj_lambda;
+    ((volatile obj_attributes*)0x07000000)[2] = obj_selector;
 
     // Wait forever
     while(1)
     {
 	vsync_wait();
+
+	if(is_key_pressed(KEY_UP))
+	    obj_selector.attr0 -= 8;
+	if(is_key_pressed(KEY_DOWN))
+	    obj_selector.attr0 += 8;
+	if(is_key_pressed(KEY_LEFT))
+	    obj_selector.attr1 -= 8;
+	if(is_key_pressed(KEY_RIGHT))
+	    obj_selector.attr1 += 8;
+	((volatile obj_attributes*)0x07000000)[2] = obj_selector;
     }
 
     return 0;
