@@ -63,22 +63,6 @@ tile4 unpack_monochrome_tile4(const uint32 data[2], uint8 fg_index, uint8 gb_ind
 
 int main(void)
 {
-    // Test of a letter
-    /*
-      ..#.....
-      ...#....
-      ...#....
-      ....#...
-      ...#.#..
-      ...#.#..
-      ..#...#.
-      ........
-    */
-    /* bytes:
-       0x04 0x08 0x08 0x0F 
-       0x28 0x28 0x44 0x00
-     */
-    //
     const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
     const uint32 selector[2] = {0x810081db, 0xdb810081};
 
@@ -101,14 +85,6 @@ int main(void)
     tile_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
     tile_palette_mem->data[2] = rbg(31, 0, 0); // third color is red
 
-    // set the object attributes
-    obj_attributes obj = {
-	50,  // y coord + other stuff
-	50,  // x coord + other stuff
-	512 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
-	0
-    };
-
     // set the lambda attributes
     obj_attributes obj_lambda = {
 	100,  // y coord + other stuff
@@ -126,11 +102,10 @@ int main(void)
     };
 
     
-    oam[0] = obj;
     oam[1] = obj_lambda;
     oam[2] = obj_selector;
 
-    const uint32 delay = 20;
+    const uint32 delay = 10;
     uint32 num_cycles_last_down = 0;
     
     // Wait forever
