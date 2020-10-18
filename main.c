@@ -87,8 +87,8 @@ int main(void)
 
     // set the lambda attributes
     obj_attributes obj_lambda = {
-	160/2,  // y coord + other stuff
-	240/2,  // x coord + other stuff
+	160/2 + 4,  // y coord + other stuff
+	240/2 - 4,  // x coord + other stuff
 	3 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
     };
@@ -136,7 +136,9 @@ int main(void)
     for(size_t row = 10 ; row < 20 ; ++row)
     {
 	for(size_t col = 0 ; col < 32 ; ++col)
-	    se_mem[0][32 * row + col] = 1;
+	    se_mem[0][32 * row + col] = (row % 2) ?
+		3 + 2 * (col % 2)
+		: 2 + 2 * (col % 2);
     }
     for(size_t row = 20 ; row < 32 ; ++row)
     {
@@ -158,9 +160,19 @@ int main(void)
 	{0x11111111, 0x12222221, 0x12222221, 0x12222221,
 	 0x12222221, 0x12222221, 0x12222221, 0x11111111},
     };
+
+    // tiles for the keycaps
+    const uint32 key_tl[2] = {0x202fe00, 0x2020202};
+    const uint32 key_tr[2] = {0x2020202, 0xfe0202};
+    const uint32 key_bl[2] = {0x40407f00, 0x40404040};
+    const uint32 key_br[2] = {0x40404040, 0x7f4040};
     
     tile_mem[1][0] = black_tile;
     tile_mem[1][1] = gray_tile;
+    tile_mem[1][2] = unpack_monochrome_tile4(key_tl, 2, 0);
+    tile_mem[1][3] = unpack_monochrome_tile4(key_tr, 2, 0);
+    tile_mem[1][4] = unpack_monochrome_tile4(key_bl, 2, 0);
+    tile_mem[1][5] = unpack_monochrome_tile4(key_br, 2, 0);
 
     // Set the palette
     bg_palette_mem->data[0] = rbg(0, 0, 0); // transparency color is black
