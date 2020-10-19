@@ -2,10 +2,8 @@
 
 #include "constants.h"
 #include "input.h"
-
-#define RED   0x001F
-#define GREEN 0x03E0
-#define BLUE  0x7C00
+#include "keyboard.h"
+#include "image.h"
 
 static inline void vsync_wait()
 {
@@ -13,124 +11,12 @@ static inline void vsync_wait()
     while(REG_VCOUNT < 160);  // wait till VBlank
 }
 
-static inline uint16 rbg(int r, int g, int b)
-{
-    return (b << 10) | (g << 5) | r;
-}
-
-// Takes a bitpacked monochrome tile, and allocate a new 8x8 pixels
-// tile (4bpp) from it.
-tile4 unpack_monochrome_tile4(const uint32 data[2], uint8 fg_index, uint8 gb_index)
-{
-    tile4 ret = {{0, 0, 0, 0, 0, 0, 0, 0},};
-
-    // 4 first lines
-    for(uint32 line = 0; line < 4 ; ++line)
-    {
-	// Takes 8 bits
-	uint32 line_bits = (data[0] >> (8 * line)) & 0xff;
-	// Map onto 32 bits
-	uint32 color = 0;
-	// Take the bit at the ith position
-	for (uint32 i = 0 ; i < 8 ; ++i)
-	{
-	    uint32 bit = (line_bits >> i) & 1;
-	    uint8 index = bit? fg_index : gb_index;
-	    color = color | (index << (4 * i));
-	}
-	ret.data[line] = color;
-    }
-
-    // 4 last lines
-    for(uint32 line = 0; line < 4 ; ++line)
-    {
-	// Takes 8 bits
-	uint32 line_bits = (data[1] >> (8 * line)) & 0xff;
-	// Map onto 32 bits
-	uint32 color = 0;
-	// Take the bit at the ith position
-	for (uint32 i = 0 ; i < 8 ; ++i)
-	{
-	    uint32 bit = (line_bits >> i) & 1;
-	    uint8 index = bit? fg_index : gb_index;
-	    color = color | (index << (4 * i));
-	}
-	ret.data[line + 4] = color;
-    }
-    
-    return ret;
-}
-
-void unpack_monochrome_tiles(const uint32* data, tile4* dest, uint32 num_tiles, uint8 fg_index, uint8 gb_index)
-{
-    for(size_t ntile = 0 ; ntile < num_tiles ; ++ntile)
-	dest[ntile] = unpack_monochrome_tile4(&data[2*ntile], fg_index, gb_index);
-}
-
-void fill_keyboard_tilemap(volatile screenblock sb)
-{
-    for(size_t row = 0 ; row < 12 ; ++row)
-    {
-	for(size_t col = 0 ; col < 32 ; ++col)
-	    sb[32 * row + col] = 0;
-    }
-    for(size_t row = 12 ; row < 20 ; ++row)
-    {
-	for(size_t col = 0 ; col < 32 ; ++col)
-	{
-	    if ((col < 4) || (col > 25))
-	    {
-		sb[32 * row + col] = 0;
-		continue;
-	    }
-	    sb[32 * row + col] = (row % 2) ?
-		3 + 2 * (col % 2)
-		: 2 + 2 * (col % 2);
-	}
-    }
-    for(size_t row = 20 ; row < 32 ; ++row)
-    {
-	for(size_t col = 0 ; col < 32 ; ++col)
-	    sb[32 * row + col] = 0;
-    }
-}
-
 int main(void)
 {
-    // const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
-    // const uint32 selector[2] = {0x810081db, 0xdb810081};
-    const uint32 big_selector[] = {0x10177, 0x10101, 0x8080ee, 0x808080, 0x1010100, 0x77010100, 0x80808000, 0xe7808000};
-
     REG_DISPCNT = flag_video_mode0 | flag_enable_bg0 | flag_enable_sprites | flag_1d_mapping;
 
-    unpack_monochrome_tiles(big_selector, &tile_mem[4][1], 4, 0x2, 0x0);
-        
-    // set the palette
-    tile_palette_mem->data[0] = rbg(31, 0, 31); // transparency color is magenta
-    tile_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
-    tile_palette_mem->data[2] = rbg(31, 0, 0); // third color is red
-
-    // set the selector attributes
-    obj_attributes obj_selector = {
-	96 // y coord
-	| (0b00 << 0xe) // sprite shape (16x16)
-	,
-	32 // x coord
-	| (0b01 << 0xe) // sprite size (16x16)
-	,
-	1 // tile index
-	| (0b10 << 0xA) // priority
-	| (0b00 << 0xC) // palette-bank
-	,
-	0
-    };
-
-    oam[0] = obj_selector;
-
-    const uint32 delay = 10;
-    uint32 num_cycles_last_down = 0;
-
-
+    init_keyboard();
+    
     // -----------------------------------------------------------------------------
     // Background
     // -----------------------------------------------------------------------------
@@ -186,16 +72,16 @@ int main(void)
     {
 	vsync_wait();
 
-	if(key_pressed_delay(ENUM_UP))
-	    obj_selector.attr0 -= 16;
-	if(key_pressed_delay(ENUM_DOWN))
-	    obj_selector.attr0 += 16;
-	if(key_pressed_delay(ENUM_LEFT))
-	    obj_selector.attr1 -= 16;
-	if(key_pressed_delay(ENUM_RIGHT))
-	    obj_selector.attr1 += 16;
+	/* if(key_pressed_delay(ENUM_UP)) */
+	/*     obj_selector.attr0 -= 16; */
+	/* if(key_pressed_delay(ENUM_DOWN)) */
+	/*     obj_selector.attr0 += 16; */
+	/* if(key_pressed_delay(ENUM_LEFT)) */
+	/*     obj_selector.attr1 -= 16; */
+	/* if(key_pressed_delay(ENUM_RIGHT)) */
+	/*     obj_selector.attr1 += 16; */
 	
-	oam[0] = obj_selector;
+	/* oam[0] = obj_selector; */
 	
 	update_key_state();
 

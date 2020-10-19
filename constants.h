@@ -9,6 +9,8 @@ typedef signed char sint8;
 typedef signed short sint16;
 typedef signed int sint32;
 
+#define rbg(r, g, b) ((b << 10) | (g << 5) | r)
+
 typedef uint32 bool; // As it is a 32bit system it should be faster TODO check that
 #define true 1
 #define false 1
