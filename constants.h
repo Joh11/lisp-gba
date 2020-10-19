@@ -37,6 +37,7 @@ typedef struct { uint16 data[256]; } palette;
 
 // Flags
 #define flag_video_mode0 0
+#define flag_1d_mapping (1 << 6)
 #define flag_enable_bg0 (1 << 8)
 #define flag_enable_bg1 (1 << 9)
 #define flag_enable_bg2 (1 << 0xa)

@@ -61,6 +61,12 @@ tile4 unpack_monochrome_tile4(const uint32 data[2], uint8 fg_index, uint8 gb_ind
     return ret;
 }
 
+void unpack_monochrome_tiles(const uint32* data, tile4* dest, uint32 num_tiles, uint8 fg_index, uint8 gb_index)
+{
+    for(size_t ntile = 0 ; ntile < num_tiles ; ++ntile)
+	dest[ntile] = unpack_monochrome_tile4(&data[2*ntile], fg_index, gb_index);
+}
+
 void fill_keyboard_tilemap(volatile screenblock sb)
 {
     for(size_t row = 0 ; row < 12 ; ++row)
@@ -93,21 +99,17 @@ int main(void)
 {
     const uint32 letter_lambda[2] = {0x10080804, 0x00442828};
     const uint32 selector[2] = {0x810081db, 0xdb810081};
+    const uint32 big_selector[] = {0x10177, 0x10101, 0x8080ee, 0x808080, 0x1010100, 0x77010100, 0x80808000, 0xe7808000};
 
-    REG_DISPCNT = flag_video_mode0 | flag_enable_bg0 | flag_enable_sprites;
+    REG_DISPCNT = flag_video_mode0 | flag_enable_bg0 | flag_enable_sprites | flag_1d_mapping;
 
     // sprite 0 of reg 5 will be totally white (the 2nd color of the palette)
     tile4 white_sprite = {
 	{0x11111111, 0x22222222, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111, 0x11111111},
     };
-    tile_mem[5][0] = white_sprite;
-    tile_mem[4][1] = white_sprite;
-    tile_mem[4][2] = white_sprite;
-
-    tile_mem[4][3] = unpack_monochrome_tile4(letter_lambda, 0x1, 0x0);
-    tile_mem[4][4] = unpack_monochrome_tile4(selector, 0x2, 0x0);
-    
-    
+    tile_mem[5][0] = unpack_monochrome_tile4(letter_lambda, 0x1, 0x0);
+    unpack_monochrome_tiles(big_selector, &tile_mem[4][0], 4, 0x2, 0x0);
+        
     // set the palette
     tile_palette_mem->data[0] = rbg(0, 0, 31); // transparency color is black
     tile_palette_mem->data[1] = rbg(31, 31, 31); // first color is white
@@ -117,20 +119,23 @@ int main(void)
     obj_attributes obj_lambda = {
 	160/2 + 16 + 4,  // y coord + other stuff
 	240/2 - 4,  // x coord + other stuff
-	3 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
+	512 | (0b11 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
     };
 
     // set the selector attributes
     obj_attributes obj_selector = {
-	160 / 2,  // y coord + other stuff
-	0,  // x coord + other stuff
-	4 | (0b10 << 0xA) | (0b00 << 0xC), // tile index + others stuff
+	96 // y coord
+	| (0b00 << 0xe) // sprite shape (16x16)
+	,
+	32 // x coord
+	| (0b01 << 0xe) // sprite size (16x16)
+	,
+	0 | (0b10 << 0xA) | (0b00 << 0xC), // tile index + others stuff
 	0
     };
 
-    
-    oam[1] = obj_lambda;
+    // oam[1] = obj_lambda;
     oam[2] = obj_selector;
 
     const uint32 delay = 10;
