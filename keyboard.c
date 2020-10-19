@@ -16,6 +16,9 @@ static const bitpacked_tile4 key_tr = {0x2020202, 0xfe0202};
 static const bitpacked_tile4 key_bl = {0x40407f00, 0x40404040};
 static const bitpacked_tile4 key_br = {0x40404040, 0x7f4040};
 
+#define LINE_LEN 80
+static const uint8 char_lut[44] = "1234567890'qwertyuiop.asdfghjkl;,zxcvbnm(-+=";
+
 // -----------------------------------------------------------------------------
 // Local variables
 // -----------------------------------------------------------------------------
@@ -30,6 +33,9 @@ typedef struct
 } PACKED key_pos;
 
 static key_pos selector_pos = {0, 0};
+
+static uint8 text[LINE_LEN] = "";
+static uint32 text_pos = 0;
 
 // -----------------------------------------------------------------------------
 // Functions
@@ -140,10 +146,10 @@ void keyboard_handle_keypress(enum_key key)
     switch(key)
     {
     case ENUM_A:
-	// put char
+	keyboard_type();
 	break;
     case ENUM_B:
-	// remove char
+	keyboard_erase();
 	break;
     case ENUM_SELECT:
 	// modifier key
@@ -209,4 +215,22 @@ void keyboard_move(enum_key key)
 	| (obj_selector.attr0 & 0xff00);
     obj_selector.attr1 = (32 + 16 * selector_pos.x)
 	| (obj_selector.attr1 & 0xff00);
+}
+
+void keyboard_type()
+{
+    if(text_pos >= LINE_LEN)
+	return;
+
+    text[text_pos] = char_lut[11 * selector_pos.y + selector_pos.x];
+    text_pos++;
+}
+
+void keyboard_erase()
+{
+    if(text_pos == 0)
+	return;
+
+    text[text_pos] = ' ';
+    text_pos--;
 }

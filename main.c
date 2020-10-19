@@ -32,6 +32,10 @@ int main(void)
 
 	if(key_pressed_delay(ENUM_START))
 	    keyboard_handle_keypress(ENUM_START);
+	if(key_pressed_delay(ENUM_A))
+	    keyboard_handle_keypress(ENUM_A);
+	if(key_pressed_delay(ENUM_B))
+	    keyboard_handle_keypress(ENUM_B);
 	
 	update_selector();
 	update_key_state();
