@@ -78,3 +78,13 @@ void fill_keyboard_tilemap(volatile screenblock sb)
     }
 }
 
+void update_selector()
+{
+    oam[0] = obj_selector;
+}
+
+void move_cursor(uint32 dx, uint32 dy)
+{
+    obj_selector.attr0 += dy;
+    obj_selector.attr1 += dx;
+}
