@@ -1,6 +1,7 @@
 #pragma once
 
 #define ALIGN(n) __attribute__((aligned(n)))
+#define PACKED __attribute__((packed))
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;

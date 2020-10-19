@@ -23,6 +23,14 @@ static const bitpacked_tile4 key_br = {0x40404040, 0x7f4040};
 static obj_attributes obj_selector;
 static bool keyboard_visiblep = true;
 
+typedef struct
+{
+    uint16 x;
+    uint16 y;
+} PACKED key_pos;
+
+static key_pos selector_pos = {0, 0};
+
 // -----------------------------------------------------------------------------
 // Functions
 // -----------------------------------------------------------------------------
@@ -124,12 +132,6 @@ void update_selector()
     oam[0] = obj_selector;
 }
 
-void move_cursor(uint32 dx, uint32 dy)
-{
-    obj_selector.attr0 += dy;
-    obj_selector.attr1 += dx;
-}
-
 void keyboard_handle_keypress(enum_key key)
 {
     if(!keyboard_visiblep && (key != ENUM_START))
@@ -150,16 +152,10 @@ void keyboard_handle_keypress(enum_key key)
 	toggle_keyboard_visibility();
 	break;
     case ENUM_LEFT:
-	move_cursor(-16, 0);
-	break;
     case ENUM_RIGHT:
-	move_cursor(16, 0);
-	break;
     case ENUM_UP:
-	move_cursor(0, -16);
-	break;
     case ENUM_DOWN:
-	move_cursor(0, 16);
+	keyboard_move(key);
 	break;
     case ENUM_R:
 	// 
@@ -177,4 +173,40 @@ void toggle_keyboard_visibility()
     keyboard_visiblep = !keyboard_visiblep;
     obj_selector.attr0 ^= (0b1 << 9); // sprite
     REG_DISPCNT ^= flag_enable_bg0;   // background
+}
+
+void keyboard_move(enum_key key)
+{
+    switch(key)
+    {
+    case ENUM_UP:
+	if(selector_pos.y == 0)
+	    return;
+	selector_pos.y--;
+	break;
+    case ENUM_DOWN:
+	if(selector_pos.y == 3)
+	    return;
+	selector_pos.y++;
+	break;
+    case ENUM_LEFT:
+	if(selector_pos.x == 0)
+	    return;
+	selector_pos.x--;
+	break;
+    case ENUM_RIGHT:
+	if(selector_pos.x == 10)
+	    return;
+	selector_pos.x++;
+	break;
+    default:
+	return;
+	break;
+    }
+    
+    // if arrived here, update obj_selector screen pos
+    obj_selector.attr0 = (96 + 16 * selector_pos.y)
+	| (obj_selector.attr0 & 0xff00);
+    obj_selector.attr1 = (32 + 16 * selector_pos.x)
+	| (obj_selector.attr1 & 0xff00);
 }
