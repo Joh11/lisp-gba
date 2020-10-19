@@ -7,6 +7,12 @@ import numpy as np
 path = sys.argv[1] if len(sys.argv) > 1 else 'image.bmp'
 
 img = Image.open(path)
+
+assert (img.size[0] % 8 == 0)
+assert (img.size[1] % 8 == 0)
+ntiles = (img.size[0] // 8, img.size[1] // 8)
+ntiles_total = ntiles[0] * ntiles[1]
+
 pixels = img.load()
 
 bits = np.zeros(img.size, dtype=bool)
@@ -23,13 +29,18 @@ for i in range(img.size[0]):
             raise RuntimeError(f'Wrong pixel: {p}')
 
 # Write the bytes for each line
-line_bytes = np.zeros(img.size[0], dtype=int)
-for i in range(len(line_bytes)):
-    for j in range(img.size[1]):
-        line_bytes[i] = line_bytes[i] | (bits[i, j] << j)
+line_bytes = np.zeros(ntiles_total * 8, dtype=int)
+for tilei in range(ntiles[0]):
+    for tilej in range(ntiles[1]):
+        for i in range(8):
+            for j in range(8):
+                posi = 8 * tilei + i
+                posj = 8 * tilej + j
+                line_bytes[tilei * (8 * ntiles[1]) + tilej * 8 + i] = line_bytes[tilei * (8 * ntiles[1]) + tilej * 8 + i] | (bits[posi, posj] << j)
 
-words = np.zeros(img.size[0] // 4, dtype=int)
-for i in range(len(words)):
+                
+words = np.zeros(ntiles_total * 2, dtype=int)
+for i in range(ntiles_total * 2):
     for j in range(4):
         words[i] = words[i] | (line_bytes[i * 4 + j] << (8 * j))
 
