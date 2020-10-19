@@ -22,17 +22,19 @@ int main(void)
 	vsync_wait();
 
 	if(key_pressed_delay(ENUM_UP))
-	    move_cursor(0, -16);
+	    keyboard_handle_keypress(ENUM_UP);
 	if(key_pressed_delay(ENUM_DOWN))
-	    move_cursor(0, 16);
+	    keyboard_handle_keypress(ENUM_DOWN);
 	if(key_pressed_delay(ENUM_LEFT))
-	    move_cursor(-16, 0);
+	    keyboard_handle_keypress(ENUM_LEFT);
 	if(key_pressed_delay(ENUM_RIGHT))
-	    move_cursor(16, 0);
+	    keyboard_handle_keypress(ENUM_RIGHT);
+
+	if(key_pressed_delay(ENUM_START))
+	    keyboard_handle_keypress(ENUM_START);
 	
 	update_selector();
 	update_key_state();
-
     }
 
     return 0;

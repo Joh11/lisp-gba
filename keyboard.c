@@ -21,6 +21,7 @@ static const bitpacked_tile4 key_br = {0x40404040, 0x7f4040};
 // -----------------------------------------------------------------------------
 
 static obj_attributes obj_selector;
+static bool keyboard_visiblep = true;
 
 // -----------------------------------------------------------------------------
 // Functions
@@ -127,4 +128,53 @@ void move_cursor(uint32 dx, uint32 dy)
 {
     obj_selector.attr0 += dy;
     obj_selector.attr1 += dx;
+}
+
+void keyboard_handle_keypress(enum_key key)
+{
+    if(!keyboard_visiblep && (key != ENUM_START))
+	return;
+    
+    switch(key)
+    {
+    case ENUM_A:
+	// put char
+	break;
+    case ENUM_B:
+	// remove char
+	break;
+    case ENUM_SELECT:
+	// modifier key
+	break;
+    case ENUM_START:
+	toggle_keyboard_visibility();
+	break;
+    case ENUM_LEFT:
+	move_cursor(-16, 0);
+	break;
+    case ENUM_RIGHT:
+	move_cursor(16, 0);
+	break;
+    case ENUM_UP:
+	move_cursor(0, -16);
+	break;
+    case ENUM_DOWN:
+	move_cursor(0, 16);
+	break;
+    case ENUM_R:
+	// 
+	break;
+    case ENUM_L:
+	// 
+	break;
+    default:
+	break;
+    }
+}
+
+void toggle_keyboard_visibility()
+{
+    keyboard_visiblep = !keyboard_visiblep;
+    obj_selector.attr0 ^= (0b1 << 9); // sprite
+    REG_DISPCNT ^= flag_enable_bg0;   // background
 }
