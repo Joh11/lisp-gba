@@ -30,13 +30,13 @@ for i in range(img.size[0]):
 
 # Write the bytes for each line
 line_bytes = np.zeros(ntiles_total * 8, dtype=int)
-for tilei in range(ntiles[0]):
-    for tilej in range(ntiles[1]):
+for tilej in range(ntiles[1]):
+    for tilei in range(ntiles[0]):
         for i in range(8):
             for j in range(8):
                 posi = 8 * tilei + i
                 posj = 8 * tilej + j
-                line_bytes[tilei * (8 * ntiles[1]) + tilej * 8 + i] = line_bytes[tilei * (8 * ntiles[1]) + tilej * 8 + i] | (bits[posi, posj] << j)
+                line_bytes[tilej * (8 * ntiles[0]) + tilei * 8 + j] = line_bytes[tilej * (8 * ntiles[0]) + tilei * 8 + j] | (bits[posi, posj] << i)
 
                 
 words = np.zeros(ntiles_total * 2, dtype=int)
