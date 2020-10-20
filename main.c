@@ -29,7 +29,8 @@ int main(void)
 	    keyboard_handle_keypress(ENUM_LEFT);
 	if(key_pressed_delay(ENUM_RIGHT))
 	    keyboard_handle_keypress(ENUM_RIGHT);
-
+	if(key_pressed_delay(ENUM_SELECT))
+	    keyboard_handle_keypress(ENUM_SELECT);
 	if(key_pressed_delay(ENUM_START))
 	    keyboard_handle_keypress(ENUM_START);
 	if(key_pressed_delay(ENUM_A))

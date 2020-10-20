@@ -35,6 +35,7 @@ a sprite for the selected key.
 Each key should be 2x2 tiles (16x16 pixels). The x axis of the screen
 can fit 30 tiles, so 15 keys. I only need 11, so I have 4 left, 2 on
 each side.
+Pixel art inspired by [[https://media.istockphoto.com/vectors/pixel-retro-font-8bit-alphabet-vector-id942420068][this image]]. 
 
 * Things to add later
 - Proper vsync like pointed in the end of [[https://www.coranac.com/tonc/text/video.htm][this tutorial]]

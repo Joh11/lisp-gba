@@ -17,3 +17,4 @@ void keyboard_move(enum_key key);
 // Add the selected char to the text
 void keyboard_type();
 void keyboard_erase();
+void keyboard_space();
