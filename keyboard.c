@@ -17,7 +17,7 @@ static const uint32 keycap[] = {0xfdfd01ff, 0xfdfdfdfd, 0xbfbf80ff, 0xbfbfbfbf, 
 static const uint32 font[] = {0xf7f3f7ff, 0xe3f7f7f7, 0xdfdbe7ff, 0xc3fbf7ef, 0xdfdbe7ff, 0xe7dbdfe7, 0xdbd7cfff, 0xdfdfdfc3, 0xe3fbc3ff, 0xe3dfdfdf, 0xfbf7efff, 0xe7dbdbe3, 0xdfdfc3ff, 0xf7f7f7ef, 0xdbdbe7ff, 0xe7dbdbe7, 0xdbdbe7ff, 0xf7efdfc7, 0xcbdbe7ff, 0xe7dbdbd3, 0xffffffff, 0xffffffff, 0xdbdbe7ff, 0xdfdfc7db, 0xffffffff, 0xebd5d5dd, 0xe7ffffff, 0xc7fbc3db, 0xcbffffff, 0xfbfbfbf3, 0xfbe1fbff, 0xf7ebfbfb, 0xdbdbdbff, 0xe7dfdfc7, 0xdbffffff, 0xc7dbdbdb, 0xefffffff, 0xefefefff, 0xe7ffffff, 0xe7dbdbdb, 0xdbdbe7ff, 0xfbfbfbe3, 0xffffffff, 0xffffffff, 0xe7ffffff, 0xc7dbc7df, 0xc7ffffff, 0xe3dfe7fb, 0xdfdfffff, 0xc7dbdbc7, 0xfbdbe7ff, 0xfbfbe3fb, 0xdbc7ffff, 0xe7dfc7db, 0xfbfbffff, 0xdbdbdbe3, 0xefffefff, 0xf7ebefef, 0xdbdbfbff, 0xdbdbdbe3, 0xfbfbfbff, 0xf7fbfbfb, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xc3ffffff, 0xc3fbe7df, 0xdbffffff, 0xdbdbe7db, 0xe7ffffff, 0xe7dbfbdb, 0xbbffffff, 0xefd7bbbb, 0xfbfbfbff, 0xe3dbdbe3, 0xffffffff, 0xdbdbdbe3, 0xffffffff, 0xabababc3, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
 
 
-#define LINE_LEN 8
+#define LINE_LEN 30
 static const uint8 char_lut[44] = "1234567890'qwertyuiop.asdfghjkl;,zxcvbnm(-+=";
 
 // -----------------------------------------------------------------------------
@@ -35,8 +35,8 @@ typedef struct
 
 static key_pos selector_pos = {0, 0};
 
-static uint8 text[LINE_LEN] = {0, 11, 34, 3, 4, 5, 6, 7};
-static uint32 text_pos = 0;
+static uint8 text[LINE_LEN];
+static uint32 text_pos = 0; // textpos = 0 for an empty text
 
 // -----------------------------------------------------------------------------
 // Functions
@@ -61,6 +61,9 @@ void init_keyboard()
 
     REG_BG0HOFS = 0;
     REG_BG0VOFS = 0;
+
+    for(size_t i = 0 ; i < LINE_LEN ; ++i)
+	text[i] = 255;
     
     // -------------------------------------------------------------------------
     // Init sprites
@@ -160,7 +163,7 @@ void update_line()
 	    | (0b00 << 0xe); // sprite shape (8x8)
 	oam[45+i].attr1 = 8 * i // x coord
 	    | (0b00 << 0xe); // sprite size (8x8)
-	oam[45+i].attr2 = 5+text[i] // tile index
+	oam[45+i].attr2 = ((text[i] == 255) ? 0 : 5+text[i]) // tile index
 	    | (0b10 << 0xA) // priority
 	    | (0b00 << 0xC); // palette-bank
     }
@@ -263,7 +266,7 @@ void keyboard_erase()
     if(text_pos == 0)
 	return;
 
-    text[text_pos] = 0;
     text_pos--;
+    text[text_pos] = 255;
     update_line();
 }
